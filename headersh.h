@@ -32,15 +32,15 @@ typedef struct path_node
 typedef struct op
 {
 	char *op;
-	int (*f)(char **, char ***, char **, int *);
+	int (*f)(char ***, char ***, char **, int *);
 } op_t;
 
 char *_strcat(char *dest, char *src);
 int _strlen(char *st);
-int simple_sh(char **av, char **en);
+int simple_sh(char **av, char ***en);
 int readsh(char **buffer, int *len);
 void parsesh(char **buffer, int *len, char ***tokens, int *status);
-int createandexesh(char ***, int *, char **, char **, int *);
+int createandexesh(char ***, int *, char ***, char **, int *);
 char *_getenv(const char *variable_env, char **en);
 path_node *_getpathdir(char *path, char **);
 int add_path(char ***tokens, char **en);
@@ -48,9 +48,14 @@ void get_path(path_node **list_path, char **en);
 int _strcmp(char *s1, char *s2);
 void free_list(path_node *list_path);
 void free_all(char **buffer, char ***tokens);
-int built_ins_sh(char ***tokens, char **en, char **buffer, int *);
-void free_env(char **en);
-int _setenv(const char *name, const char *value, int overwrite, char ***ev);
-int _unsetenv(const char *name, char ***ev);
 
+/*Built-ins*/
+int built_ins_sh(char ***tokens, char ***en, char **buffer, int *);
+
+int _setenv(char ***en, char ***tokens, char **buffer, int *statuss);
+int _unsetenv(char ***en, char ***tokens, char **buffer, int *statuss);
+
+/*env utilities*/
+char **envdup(char **env);
+void freeenv(char **env);
 #endif

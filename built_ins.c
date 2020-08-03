@@ -9,18 +9,18 @@
 * Return: nothing
 */
 
-int env(char **en, char ***tokens, char **buffer, int *statuss)
+int env(char ***en, char ***tokens, char **buffer, int *statuss)
 {
 	int i, j;
 
 	(void)tokens;
 	(void)buffer;
 	(void)statuss;
-	for (i = 0; en[i] != NULL; i++)
+	for (i = 0; (*en)[i] != NULL; i++)
 	{
-		for (j = 0; en[i][j] != '\0'; j++)
+		for (j = 0; (*en)[i][j] != '\0'; j++)
 			continue;
-		write(STDOUT_FILENO, en[i], j);
+		write(STDOUT_FILENO, (*en)[i], j);
 		write(STDOUT_FILENO, "\n", 1);
 	}
 	return (1);
@@ -60,15 +60,14 @@ int _atoi(char *s)
 * Return: nothing
 */
 
-int exi(char **en, char ***tokens, char **buffer, int *statuss)
+int exi(char ***en, char ***tokens, char **buffer, int *statuss)
 {
 	int s = *statuss;
 
-	(void)en;
 	if ((*tokens)[1])
 		s = _atoi((*tokens)[1]);
 	free_all(buffer, tokens);
-	/*free_env(en)*/
+	freeenv(*en);
 	exit(s);
 }
 
@@ -81,19 +80,37 @@ int exi(char **en, char ***tokens, char **buffer, int *statuss)
 * Return: nothing
 */
 
-int cd(char **en, char ***tokens, char **buffer, int *statuss)
+int cd(char ***en, char ***tokens, char **buffer, int *statuss)
 {
 	int ret = 0;
-	char *home_env = NULL, *prewd = NULL;
+	char *home_env = NULL, *prewd = NULL, *set[3];
 
 	(void)buffer;
-	(void)statuss;
-	home_env = _getenv("HOME", en);
-	prewd = _getenv("PWD", en);
+	home_env = _getenv("HOME", *en);
 	if (!(*tokens)[1])
 		ret = chdir(home_env);
 	else
-		ret = chdir(prewd);
+	{
+		prewd = _getenv("OLDPWD", *en);
+		if (!(*tokens)[1] == '-')
+		{
+			if (!prewd)
+			{
+				perror("-hsh: cd: OLDPWD not set");
+				*statuss = 1;
+				return (0);
+			}
+			ret = chdir(prewd);
+		}
+		else
+		{
+			ret = chdir((*tokens)[1]);
+		}
+		set[0] = NULL;
+		set[1] = "OLDPWD";
+		set[2] = _getenv("PWD", *en);
+		_setenv(env, &set, buffer, statuss);
+	}
 	return (!ret);
 }
 
@@ -106,13 +123,15 @@ int cd(char **en, char ***tokens, char **buffer, int *statuss)
 * Return: numbers of characters printed
 */
 
-int built_ins_sh(char ***tokens, char **en, char **buffer, int *statuss)
+int built_ins_sh(char ***tokens, char ***en, char **buffer, int *statuss)
 {
 	int j;
 	op_t o[] = {
 		{"env", env},
 		{"exit", exi},
 		{"cd", cd},
+		{"unsetenv", _unsetenv},
+		{"setenv", _setenv},
 		{NULL, NULL},
 	};
 

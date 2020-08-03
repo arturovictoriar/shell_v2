@@ -62,13 +62,14 @@ void ctrlc(int ctr_c __attribute__((unused)))
 * @en: external variable environment parsed by lines
 * Return: nothing
 */
-int simple_sh(char **av, char **en)
+int simple_sh(char **av, char ***en)
 {
 	char *buffer, **tokens;
 	int len = 0, status = 0, stat = 0, cont_com = 0;
 
 	signal(SIGINT, ctrlc);
-	do {
+	do
+	{
 		/*Count all iterations*/
 		cont_com++;
 		/*Set all parameter in zero*/
