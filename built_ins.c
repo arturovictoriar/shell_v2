@@ -83,7 +83,8 @@ int exi(char ***en, char ***tokens, char **buffer, int *statuss)
 int cd(char ***en, char ***tokens, char **buffer, int *statuss)
 {
 	int ret = 0;
-	char *home_env = NULL, *prewd = NULL, *set[3];
+	char *_set[3];
+	char *home_env = NULL, *prewd = NULL, **set = _set;
 
 	(void)buffer;
 	home_env = _getenv("HOME", *en);
@@ -109,7 +110,7 @@ int cd(char ***en, char ***tokens, char **buffer, int *statuss)
 		set[0] = NULL;
 		set[1] = "OLDPWD";
 		set[2] = _getenv("PWD", *en);
-		_setenv(env, &set, buffer, statuss);
+		_setenv(en, &set, buffer, statuss);
 	}
 	return (!ret);
 }

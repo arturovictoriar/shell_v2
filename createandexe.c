@@ -98,7 +98,7 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 * Return: the process status
 */
 
-int check_command(char ***tokens, int *cc, char **en, char **av, int *statuss)
+int check_command(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 {
 	int statu = 0;
 	char **buffer = *tokens, *tok = NULL;
@@ -108,7 +108,7 @@ int check_command(char ***tokens, int *cc, char **en, char **av, int *statuss)
 	statu = built_ins_sh(tokens, en, buffer, statuss);
 	if (statu != 0)
 		return (2);
-	statu = add_path(tokens, en);
+	statu = add_path(tokens, *en);
 	if (statu == 127)
 	{
 		print_error(av[0], *cc, (*tokens)[0], 1);
@@ -151,7 +151,7 @@ int check_command(char ***tokens, int *cc, char **en, char **av, int *statuss)
 * @statuss: previous loop status
 * Return: the process status
 */
-int createandexesh(char ***tokens, int *cc, char **en, char **av, int *statuss)
+int createandexesh(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 {
 	pid_t child_pid;
 	int wait_status = 0, statu = 0, exit_stat = 0;
@@ -175,7 +175,7 @@ int createandexesh(char ***tokens, int *cc, char **en, char **av, int *statuss)
 	}
 	if (child_pid == 0)
 	{
-		if (execve(command, *tokens, en) == -1)
+		if (execve(command, *tokens, *en) == -1)
 		{
 			if (statu == 1)
 				free_tok(command);
