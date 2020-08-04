@@ -58,14 +58,14 @@ char *concat_two_strings(char *str1, char *str2)
 * @statuss: previous loop status
 * Return: 0 on success otherwise -1
 */
-int _setenv(char ***en, char ***tokens, char **buffer, int *statuss)
+int _setenv(char ***en, char ***tokens, char **buffer, int *statuss, char **av, int *cc)
 {
 	int i = 0, j = 0, flag = 0, size_env = 0;
 	char *new_str = NULL, *new_str_eq, **new_en = NULL;
-	(void)buffer, (void)statuss;
+	(void)buffer, (void)statuss, (void)av, (void)cc;
 
 	if (!(*tokens)[1] || !(*tokens)[2])
-		return (0);
+		return (1);
 	new_str_eq = concat_two_strings("=", (*tokens)[1]);
 	new_str = concat_two_strings((*tokens)[2], new_str_eq);
 	free(new_str_eq);
@@ -110,15 +110,14 @@ int _setenv(char ***en, char ***tokens, char **buffer, int *statuss)
 * Return: nothing
 */
 
-int _unsetenv(char ***en, char ***tokens, char **buffer, int *statuss)
+int _unsetenv(char ***en, char ***tokens, char **buffer, int *statuss, char **av, int *cc)
 {
 	int i = 0, j = 0, k = 0, flag = 0, size_env = 0;
 	char **new_en = NULL;
-	(void)buffer;
-	(void)statuss;
+	(void)buffer, (void)statuss, (void)av, (void)cc;
 
 	if (!(*tokens)[1])
-		return (0);
+		return (1);
 	if (!_getenv((*tokens)[1], *en) || !(*en))
 		return (1);
 

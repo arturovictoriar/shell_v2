@@ -105,7 +105,7 @@ int check_command(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 	struct stat st;
 
 	st.st_mode = 0;
-	statu = built_ins_sh(tokens, en, buffer, statuss);
+	statu = built_ins_sh(tokens, en, buffer, statuss, av, cc);
 	if (statu != 0)
 		return (2);
 	statu = add_path(tokens, *en);
@@ -160,17 +160,16 @@ int createandexesh(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 	statu = check_command(tokens, cc, en, av, statuss);
 	if (statu != 0 && statu != 1)
 	{
-		if (statu == 2)
-			return (0);
+		if (statu != 2)
+			*statuss = statu;
 		return (statu);
 	}
-	trans = (*tokens)[0];
-	(*tokens)[0] = command;
-	command = trans;
+	trans = (*tokens)[0], (*tokens)[0] = command, command = trans;
 	child_pid = fork();
 	if (child_pid == -1)
 	{
 		perror("Error:");
+		*statuss = 1;
 		return (1);
 	}
 	if (child_pid == 0)
@@ -179,7 +178,7 @@ int createandexesh(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 		{
 			if (statu == 1)
 				free_tok(command);
-			exit(50);
+			exit(127);
 		}
 	}
 	else
@@ -190,6 +189,6 @@ int createandexesh(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 	}
 	if (statu == 1)
 		free_tok(command);
-
+	*statuss = exit_stat;
 	return (exit_stat);
 }

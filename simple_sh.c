@@ -68,8 +68,7 @@ int simple_sh(char **av, char ***en)
 	int len = 0, status = 0, stat = 0, cont_com = 0;
 
 	signal(SIGINT, ctrlc);
-	do
-	{
+	do {
 		/*Count all iterations*/
 		cont_com++;
 		/*Set all parameter in zero*/
@@ -89,7 +88,7 @@ int simple_sh(char **av, char ***en)
 		/*Parse section*/
 		parsesh(&buffer, &len, &tokens, &status);
 		/*Create/Execute Section*/
-		status = createandexesh(&tokens, &cont_com, en, av, &status);
+		createandexesh(&tokens, &cont_com, en, av, &status);
 		/*End of program*/
 		free_all(&buffer, &tokens);
 	} while (1);
