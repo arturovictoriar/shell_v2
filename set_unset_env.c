@@ -1,6 +1,33 @@
 #include "headersh.h"
 
 /**
+* env - fills memory with a constant byte
+* @tokens: the value to print
+* @en: environ variable
+* @buffer: read it from user
+* @statuss: previous loop status
+* @cc: is the counter of commans executes by user
+* @av: list containing the arguments given by user
+* Return: nothing
+*/
+
+int env(char ***en, char ***tokens, char **buffer,
+	int *statuss, char **av, int *cc)
+{
+	int i, j;
+
+	(void)tokens, (void)buffer, (void)statuss, (void)av, (void)cc;
+	for (i = 0; (*en)[i] != NULL; i++)
+	{
+		for (j = 0; (*en)[i][j] != '\0'; j++)
+			continue;
+		write(STDOUT_FILENO, (*en)[i], j);
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	return (1);
+}
+
+/**
 * count_characters - count the numbers of characters there is in a pointer
 * @str: pointer with the name of the directory
 * Return: the length of the name
@@ -56,9 +83,12 @@ char *concat_two_strings(char *str1, char *str2)
 * @en: environ variable
 * @buffer: read it from user
 * @statuss: previous loop status
+* @cc: is the counter of commans executes by user
+* @av: list containing the arguments given by user
 * Return: 0 on success otherwise -1
 */
-int _setenv(char ***en, char ***tokens, char **buffer, int *statuss, char **av, int *cc)
+int _setenv(char ***en, char ***tokens, char **buffer,
+	int *statuss, char **av, int *cc)
 {
 	int i = 0, j = 0, flag = 0, size_env = 0;
 	char *new_str = NULL, *new_str_eq, **new_en = NULL;
@@ -107,10 +137,13 @@ int _setenv(char ***en, char ***tokens, char **buffer, int *statuss, char **av, 
 * @en: environ variable
 * @buffer: read it from user
 * @statuss: previous loop status
+* @cc: is the counter of commans executes by user
+* @av: list containing the arguments given by user
 * Return: nothing
 */
 
-int _unsetenv(char ***en, char ***tokens, char **buffer, int *statuss, char **av, int *cc)
+int _unsetenv(char ***en, char ***tokens, char **buffer,
+	int *statuss, char **av, int *cc)
 {
 	int i = 0, j = 0, k = 0, flag = 0, size_env = 0;
 	char **new_en = NULL;

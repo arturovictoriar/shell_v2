@@ -58,6 +58,8 @@ void print_error_builtin(char *av, int cc, char **token, char *errmsg);
 /*Built-ins*/
 int built_ins_sh(char ***tokens, char ***, char **, int *, char **, int *);
 
+int env(char ***en, char ***tokens, char **buffer,
+	int *statuss, char **av, int *cc);
 int _setenv(char ***en, char ***tokens, char **buffer, int *, char **, int *);
 int _unsetenv(char ***en, char ***tokens, char **, int *, char **, int *);
 
