@@ -144,12 +144,12 @@ int built_ins_sh(char ***tokens, char ***en, char **buffer,
 {
 	int j;
 	op_t o[] = {
-		{"env", env},
-		{"exit", exi},
-		{"cd", cd},
-		{"unsetenv", _unsetenv},
-		{"setenv", _setenv},
-		{NULL, NULL},
+		{ "env", env },
+		{ "exit", exi },
+		{ "cd", cd },
+		{ "unsetenv", _unsetenv },
+		{ "setenv", _setenv },
+		{ NULL, NULL },
 	};
 
 	for (j = 0; o[j].op != NULL; j++)
