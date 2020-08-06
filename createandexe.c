@@ -151,7 +151,8 @@ int check_command(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 * @statuss: previous loop status
 * Return: the process status
 */
-int createandexesh(char ***tokens, int *cc, char ***en, char **av, int *statuss)
+int createandexesh(char ***tokens, int *cc, char ***en, char **av,
+	int *statuss)
 {
 	pid_t child_pid;
 	int wait_status = 0, statu = 0, exit_stat = 0;
