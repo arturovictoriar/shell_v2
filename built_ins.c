@@ -36,27 +36,29 @@ int _atoi(char *s, int *is_number)
 * @statuss: previous loop status
 * @cc: is the counter of commans executes by user
 * @av: list containing the arguments given by user
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: nothing
 */
 
 int exi(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc)
+	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
 {
 	int s = *statuss, is_number = 0;
 	char err_message[] = "Illegal number: ";
 
 	(void)av, (void)cc;
-	if ((*tokens)[1])
+	if ((*tok_com)[1])
 	{
-		s = _atoi((*tokens)[1], &is_number);
+		s = _atoi((*tok_com)[1], &is_number);
 		if (s < 0 || is_number == 1)
 		{
-			print_error_builtin(*av, *cc, *tokens, err_message);
+			print_error_builtin(*av, *cc, *tok_com, err_message);
 			*statuss = 2;
 			return (1);
 		}
 	}
-	free_all(buffer, tokens);
+	free_all(buffer, tokens, head);
 	freeenv(*en);
 	exit(s);
 }
@@ -84,11 +86,13 @@ int print_error_cd(char *av, int cc, char **tokens)
 * @statuss: previous loop status
 * @cc: is the counter of commans executes by user
 * @av: list containing the arguments given by user
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: nothing
 */
 
 int cd(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc)
+	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
 {
 	char *home_env = NULL, *prewd = NULL, *_set1[3], **set_old = _set1;
 	char *_set2[3], **set_new = _set2;
@@ -101,30 +105,30 @@ int cd(char ***en, char ***tokens, char **buffer,
 	set_new[0] = NULL, set_new[1] = "PWD";
 	if (!prewd)
 	{
-		_setenv(en, &set_old, buffer, statuss, av, cc);
+		_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old);
 		prewd = _getenv("OLDPWD", *en);
 	}
-	if (!(*tokens)[1])
+	if (!(*tok_com)[1])
 		ret = chdir(home_env), set_new[2] = home_env;
 	else
 	{
-		if (!_strcmp((*tokens)[1], "-"))
+		if (!_strcmp((*tok_com)[1], "-"))
 		{
 			ret = chdir(prewd);
 			if (ret == -1)
-				return (print_error_cd(*av, *cc, *tokens));
+				return (print_error_cd(*av, *cc, *tok_com));
 			printf("%s\n", prewd), set_new[2] = prewd;
 		}
 		else
 		{
-			ret = chdir((*tokens)[1]);
+			ret = chdir((*tok_com)[1]);
 			if (ret == -1)
-				return (print_error_cd(*av, *cc, *tokens));
-			set_new[2] = (*tokens)[1];
+				return (print_error_cd(*av, *cc, *tok_com));
+			set_new[2] = (*tok_com)[1];
 		}
 	}
-	_setenv(en, &set_old, buffer, statuss, av, cc);
-	_setenv(en, &set_new, buffer, statuss, av, cc);
+	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old);
+	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_new);
 	return (1);
 }
 
@@ -136,11 +140,13 @@ int cd(char ***en, char ***tokens, char **buffer,
 * @statuss: previous loop status
 * @cc: is the counter of commans executes by user
 * @av: list containing the arguments given by user
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: numbers of characters printed
 */
 
 int built_ins_sh(char ***tokens, char ***en, char **buffer,
-	int *statuss, char **av, int *cc)
+	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
 {
 	int j;
 	op_t o[] = {
@@ -153,7 +159,8 @@ int built_ins_sh(char ***tokens, char ***en, char **buffer,
 	};
 
 	for (j = 0; o[j].op != NULL; j++)
-		if (_strcmp((*tokens)[0], o[j].op) == 0)
-			return (o[j].f(en, tokens, buffer, statuss, av, cc));
+		if (_strcmp((*tok_com)[0], o[j].op) == 0)
+			return (o[j].f(en, tokens, buffer, statuss, av, cc,
+		head, tok_com));
 	return (0);
 }

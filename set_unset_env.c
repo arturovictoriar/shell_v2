@@ -8,15 +8,19 @@
 * @statuss: previous loop status
 * @cc: is the counter of commans executes by user
 * @av: list containing the arguments given by user
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: nothing
 */
 
 int env(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc)
+	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
 {
 	int i, j;
 
 	(void)tokens, (void)buffer, (void)statuss, (void)av, (void)cc;
+	(void)head, (void)tok_com;
+
 	for (i = 0; (*en)[i] != NULL; i++)
 	{
 		for (j = 0; (*en)[i][j] != '\0'; j++)
@@ -85,21 +89,24 @@ char *concat_two_strings(char *str1, char *str2)
 * @statuss: previous loop status
 * @cc: is the counter of commans executes by user
 * @av: list containing the arguments given by user
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: 0 on success otherwise -1
 */
 int _setenv(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc)
+	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
 {
 	int i = 0, j = 0, flag = 0, size_env = 0;
 	char *new_str = NULL, *new_str_eq, **new_en = NULL;
-	(void)buffer, (void)statuss, (void)av, (void)cc;
+	(void)buffer, (void)statuss, (void)av, (void)cc, (void)head;
+	(void)tokens;
 
-	if (!(*tokens)[1] || !(*tokens)[2])
+	if (!(*tok_com)[1] || !(*tok_com)[2])
 		return (1);
-	new_str_eq = concat_two_strings("=", (*tokens)[1]);
-	new_str = concat_two_strings((*tokens)[2], new_str_eq);
+	new_str_eq = concat_two_strings("=", (*tok_com)[1]);
+	new_str = concat_two_strings((*tok_com)[2], new_str_eq);
 	free(new_str_eq);
-	if (!_getenv((*tokens)[1], *en))
+	if (!_getenv((*tok_com)[1], *en))
 	{
 		while ((*en)[size_env])
 			size_env++;
@@ -116,9 +123,9 @@ int _setenv(char ***en, char ***tokens, char **buffer,
 		for (i = 0; (*en)[i]; i++)
 		{
 			flag = 1;
-			for (j = 0; (*tokens)[1][j]; j++)
+			for (j = 0; (*tok_com)[1][j]; j++)
 			{
-				if ((*tokens)[1][j] != (*en)[i][j])
+				if ((*tok_com)[1][j] != (*en)[i][j])
 				{
 					flag = 0;
 					break;
@@ -139,19 +146,22 @@ int _setenv(char ***en, char ***tokens, char **buffer,
 * @statuss: previous loop status
 * @cc: is the counter of commans executes by user
 * @av: list containing the arguments given by user
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: nothing
 */
 
 int _unsetenv(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc)
+	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
 {
 	int i = 0, j = 0, k = 0, flag = 0, size_env = 0;
 	char **new_en = NULL;
-	(void)buffer, (void)statuss, (void)av, (void)cc;
+	(void)buffer, (void)statuss, (void)av, (void)cc, (void)head;
+	(void)tokens;
 
-	if (!(*tokens)[1])
+	if (!(*tok_com)[1])
 		return (1);
-	if (!_getenv((*tokens)[1], *en) || !(*en))
+	if (!_getenv((*tok_com)[1], *en) || !(*en))
 		return (1);
 
 	while ((*en)[size_env])
@@ -164,9 +174,9 @@ int _unsetenv(char ***en, char ***tokens, char **buffer,
 	for (i = 0; (*en)[i]; i++)
 	{
 		flag = 1;
-		for (j = 0; (*tokens)[1][j]; j++)
+		for (j = 0; (*tok_com)[1][j]; j++)
 		{
-			if ((*tokens)[1][j] != (*en)[i][j])
+			if ((*tok_com)[1][j] != (*en)[i][j])
 			{
 				flag = 0;
 				break;

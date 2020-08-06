@@ -5,25 +5,32 @@
 * @buffer: store the data get it
 * @tokens: store the string user wrote
 * @stat: execute status
+* @head: multiples commands
 * Return: nothing
 */
-void set_all(char **buffer, char ***tokens, int *stat)
+void set_all(char **buffer, char ***tokens, int *stat, dlistint_t **head)
 {
 	*stat = 0;
 	*buffer = NULL;
 	*tokens = NULL;
+	*head = NULL;
 }
 
 /**
 * free_all - free the given parameters to zero
 * @buffer: store the data get it
 * @tokens: store the string user wrote
+* @head: multiples commands
 * Return: nothing
 */
-void free_all(char **buffer, char ***tokens)
+void free_all(char **buffer, char ***tokens, dlistint_t **head)
 {
-	free(*buffer);
-	free(*tokens);
+	if (*buffer)
+		free(*buffer);
+	if (*tokens)
+		free(*tokens);
+	if (*head)
+		free_dlistint(*head);
 }
 
 /**
@@ -66,13 +73,14 @@ int simple_sh(char **av, char ***en)
 {
 	char *buffer, **tokens;
 	int len = 0, status = 0, stat = 0, cont_com = 0;
+	dlistint_t *head;
 
 	signal(SIGINT, ctrlc);
 	do {
 		/*Count all iterations*/
 		cont_com++;
 		/*Set all parameter in zero*/
-		set_all(&buffer, &tokens, &stat);
+		set_all(&buffer, &tokens, &stat, &head);
 		/*Interactive shell prompt*/
 		if (isatty(STDIN_FILENO))
 			write(1, "($)", 4);
@@ -87,10 +95,12 @@ int simple_sh(char **av, char ***en)
 			return (status);
 		/*Parse section*/
 		parsesh(&buffer, &len, &tokens, &status);
+		/*Save multiples lines*/
+		save_mul_commands(&head, &tokens, &status);
 		/*Create/Execute Section*/
-		createandexesh(&tokens, &cont_com, en, av, &status);
+		exe_mul_commands(&tokens, &cont_com, en, av, &status, &head);
 		/*End of program*/
-		free_all(&buffer, &tokens);
+		free_all(&buffer, &tokens, &head);
 	} while (1);
 	return (0);
 }

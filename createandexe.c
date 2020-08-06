@@ -95,26 +95,29 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 * @en: list containing the end parameter for execve syscall
 * @av: list containing the arguments given by user
 * @statuss: previous loop status
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: the process status
 */
 
-int check_command(char ***tokens, int *cc, char ***en, char **av, int *statuss)
+int check_command(char ***tokens, int *cc, char ***en, char **av,
+	int *statuss, dlistint_t **head, char ***tok_com)
 {
 	int statu = 0;
 	char **buffer = *tokens, *tok = NULL;
 	struct stat st;
 
 	st.st_mode = 0;
-	statu = built_ins_sh(tokens, en, buffer, statuss, av, cc);
+	statu = built_ins_sh(tokens, en, buffer, statuss, av, cc, head, tok_com);
 	if (statu != 0)
 		return (2);
-	statu = add_path(tokens, *en);
+	statu = add_path(tok_com, *en);
 	if (statu == 127)
 	{
-		print_error(av[0], *cc, (*tokens)[0], 1);
+		print_error(av[0], *cc, (*tok_com)[0], 1);
 		return (statu);
 	}
-	tok = (*tokens)[0];
+	tok = (*tok_com)[0];
 	stat(tok, &st);
 	if ((access(tok, F_OK | X_OK) == 0) &&
 		((st.st_mode & S_IFMT) == S_IFREG))
@@ -149,23 +152,25 @@ int check_command(char ***tokens, int *cc, char ***en, char **av, int *statuss)
 * @en: list containing the end parameter for execve syscall
 * @av: list containing the arguments given by user
 * @statuss: previous loop status
+* @head: all commands in a line
+* @tok_com: ONE command of a line
 * Return: the process status
 */
 int createandexesh(char ***tokens, int *cc, char ***en, char **av,
-	int *statuss)
+	int *statuss, dlistint_t **head, char ***tok_com)
 {
 	pid_t child_pid;
 	int wait_status = 0, statu = 0, exit_stat = 0;
-	char *command = **tokens, *trans;
+	char *command = **tok_com, *trans;
 
-	statu = check_command(tokens, cc, en, av, statuss);
+	statu = check_command(tokens, cc, en, av, statuss, head, tok_com);
 	if (statu != 0 && statu != 1)
 	{
 		if (statu != 2)
 			*statuss = statu;
 		return (statu);
 	}
-	trans = (*tokens)[0], (*tokens)[0] = command, command = trans;
+	trans = (*tok_com)[0], (*tok_com)[0] = command, command = trans;
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -175,7 +180,7 @@ int createandexesh(char ***tokens, int *cc, char ***en, char **av,
 	}
 	if (child_pid == 0)
 	{
-		if (execve(command, *tokens, *en) == -1)
+		if (execve(command, *tok_com, *en) == -1)
 		{
 			if (statu == 1)
 				free_tok(command);

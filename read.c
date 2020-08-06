@@ -6,7 +6,6 @@
 * @read: external variable environment parsed by lines
 * Return: number of nodes
 */
-
 int num_tokens(char **buffer, ssize_t read)
 {
 	const char delim[] = " \t\n";
@@ -30,12 +29,84 @@ int num_tokens(char **buffer, ssize_t read)
 }
 
 /**
+* count_sign_command - count the sign which separe the commands
+* @buff: store the data get it
+* @read: lenght of the tokens
+* Return: the number of sign in the buffer
+*/
+int count_sign_command(char **buff, ssize_t *read)
+{
+	int i = 0, j = 0, sign_commands = 0, flag_deli = 0;
+	char *all_f_gene[] = {">", ">>", "<", "<<", "|", ";", "&&", "||", NULL};
+	char **all_flags = all_f_gene;
+
+	for (i = 0; i < *read; i++)
+	{
+		flag_deli = 0;
+		for (j = 0; all_f_gene[j]; j++)
+		{
+			if (!_strcmp(&((*buff)[i]), all_flags[j]))
+			{
+				flag_deli = 1;
+				break;
+			}
+		}
+		if (flag_deli)
+			sign_commands++;
+	}
+	return (sign_commands);
+}
+
+/**
+* sure_separate_commands - ensure all commands are properly separeted
+* @buff: store the data get it
+* @read: lenght of the tokens
+* Return: nothing
+*/
+int sure_separate_commands(char **buff, ssize_t *read)
+{
+	int i = 0, j = 0, sign_commands = 0, flag_deli = 0, add_spaces = 0;
+	char *all_f_gene[] = {">", ">>", "<", "<<", "|", ";", "&&", "||", NULL};
+	char **all_flags = all_f_gene, *new_buff = NULL;
+
+	sign_commands = count_sign_command(buff, read);
+	if (!sign_commands)
+		return (0);
+	new_buff = malloc(sizeof(char) * ((2 * sign_commands) + *read + 1));
+	for (i = 0; i < *read; i++)
+	{
+		flag_deli = 0;
+		for (j = 0; all_f_gene[j]; j++)
+		{
+			if (!_strcmp(&((*buff)[i]), all_flags[j]))
+			{
+				flag_deli = 1;
+				break;
+			}
+		}
+		if (flag_deli)
+		{
+			new_buff[i + add_spaces] = ' ';
+			new_buff[i + add_spaces + 1] = (*buff)[i];
+			new_buff[i + add_spaces + 2] = ' ';
+			add_spaces += 2;
+		}
+		else
+			new_buff[i + add_spaces] = (*buff)[i];
+	}
+	new_buff[i + add_spaces] = '\0';
+	free(*buff);
+	*buff = new_buff;
+	*read += add_spaces;
+	return (0);
+}
+
+/**
 * readsh - read what user wrote
 * @buff: store the data get it
 * @len: lenght of the tokens
 * Return: nothing
 */
-
 int readsh(char **buff, int *len)
 {
 	ssize_t read = 0;
@@ -60,6 +131,7 @@ int readsh(char **buff, int *len)
 	/*New line*/
 	if (b[0] == '\n')
 		return (1);
+	sure_separate_commands(buff, &read);
 	*len = num_tokens(buff, read);
 	return (0);
 }
