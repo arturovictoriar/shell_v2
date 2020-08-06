@@ -104,7 +104,7 @@ int cd(char ***en, char ***tokens, char **buffer, int *statuss, char **av, int *
 	else
 	{
 		prewd = _getenv("OLDPWD", *en);
-		if (!(*tokens)[1] == '-')
+		if (!((*tokens)[1][0] == '-'))
 		{
 			if (!prewd)
 			{
@@ -139,12 +139,12 @@ int built_ins_sh(char ***tokens, char ***en, char **buffer, int *statuss, char *
 {
 	int j;
 	op_t o[] = {
-		{"env", env},
-		{"exit", exi},
-		{"cd", cd},
-		{"unsetenv", _unsetenv},
-		{"setenv", _setenv},
-		{NULL, NULL},
+		{ "env", env },
+		{ "exit", exi },
+		{ "cd", cd },
+		{ "unsetenv", _unsetenv },
+		{ "setenv", _setenv },
+		{ NULL, NULL },
 	};
 
 	for (j = 0; o[j].op != NULL; j++)
