@@ -149,10 +149,10 @@ int check_command(char ***tokens, int *cc, char ***en, char **av,
 int exe_command(int statu, char ***en, int *statuss, char ***tok_com,
 	dlistint_t *cur_node, char *command)
 {
-	int wait_status = 0, exit_stat = 0;
+	int wait_status = 0, exit_stat = 0, pipefd[2];
 	pid_t child_pid;
 
-	(void)cur_node;
+	create_pipe(&pipefd);
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -162,6 +162,7 @@ int exe_command(int statu, char ***en, int *statuss, char ***tok_com,
 	}
 	if (child_pid == 0)
 	{
+		change_output_command(pipefd);
 		if (execve(command, *tok_com, *en) == -1)
 		{
 			if (statu == 1)
@@ -171,6 +172,7 @@ int exe_command(int statu, char ***en, int *statuss, char ***tok_com,
 	}
 	else
 	{
+		read_command_output(pipefd, cur_node);
 		waitpid(child_pid, &wait_status, 0);
 		if (WIFEXITED(wait_status))
 			exit_stat = WEXITSTATUS(wait_status);

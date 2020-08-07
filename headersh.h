@@ -8,6 +8,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+
 
 /**
 * struct dlistint_s - doubly linked list
@@ -103,4 +105,10 @@ void free_dlistint(dlistint_t *head);
 /*Execute multiples commands*/
 int exe_mul_commands(char ***tokens, int *cc, char ***en, char **av,
 	int *status, dlistint_t **head);
+
+/*Utils for execute multiples commands*/
+int realloc_buffer(char **buffer, char *str);
+int create_pipe(int (*pipefd)[2]);
+int read_command_output(int *pipefd, dlistint_t *cur_node);
+int change_output_command(int *pipefd);
 #endif
