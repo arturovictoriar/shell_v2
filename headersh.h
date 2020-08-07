@@ -55,7 +55,7 @@ typedef struct op
 {
 	char *op;
 	int (*f)(char ***, char ***, char **, int *, char **, int *,
-				dlistint_t **, char ***tok_com);
+				dlistint_t **, char ***tok_com, dlistint_t *);
 } op_t;
 
 char *_strcat(char *dest, char *src);
@@ -65,7 +65,7 @@ int simple_sh(char **av, char ***en);
 int readsh(char **buffer, int *len);
 void parsesh(char **buffer, int *len, char ***tokens, int *status);
 int createandexesh(char ***, int *, char ***, char **, int *,
-	dlistint_t **, char ***);
+	dlistint_t **, char ***, dlistint_t *);
 char *_getenv(const char *variable_env, char **en);
 path_node *_getpathdir(char *path, char **);
 int add_path(char ***tokens, char **en);
@@ -81,14 +81,14 @@ void print_error_builtin(char *av, int cc, char **token, char *errmsg);
 
 /*Built-ins*/
 int built_ins_sh(char ***tokens, char ***, char **, int *, char **,
-	int *, dlistint_t **head, char ***tok_com);
+	int *, dlistint_t **head, char ***tok_com, dlistint_t *);
 
-int env(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com);
+int env(char ***en, char ***tokens, char **buffer, int *statuss, char **av,
+	int *cc, dlistint_t **head, char ***tok_com, dlistint_t *cur_node);
 int _setenv(char ***en, char ***tokens, char **buffer, int *, char **,
-	int *, dlistint_t **head, char ***tok_com);
+	int *, dlistint_t **head, char ***tok_com, dlistint_t *cur_node);
 int _unsetenv(char ***en, char ***tokens, char **, int *, char **,
-	int *, dlistint_t **head, char ***tok_com);
+	int *, dlistint_t **head, char ***tok_com, dlistint_t *cur_node);
 
 /*env utilities*/
 char **envdup(char **env);

@@ -20,7 +20,7 @@ int exe_mul_commands(char ***tokens, int *cc, char ***en, char **av,
 	while (copy_head)
 	{
 		tok_com = &(copy_head->tokens);
-		createandexesh(tokens, cc, en, av, status, head, tok_com);
+		createandexesh(tokens, cc, en, av, status, head, tok_com, copy_head);
 		copy_head = copy_head->next;
 	}
 	return (0);

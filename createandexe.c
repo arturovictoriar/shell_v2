@@ -1,16 +1,6 @@
 #include "headersh.h"
 
 /**
-* free_tok - frees the @tokens string
-* @command: string containing the parsed input line
-* Return: nothing
-*/
-void free_tok(char *command)
-{
-	free(command);
-}
-
-/**
 * _itoa - takes an int and converts it to a string
 * @num: int passed to function
 * @strnum: string to be converted
@@ -97,18 +87,19 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 * @statuss: previous loop status
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: the process status
 */
 
 int check_command(char ***tokens, int *cc, char ***en, char **av,
-	int *statuss, dlistint_t **head, char ***tok_com)
+	int *statuss, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
 {
 	int statu = 0;
 	char **buffer = *tokens, *tok = NULL;
 	struct stat st;
 
-	st.st_mode = 0;
-	statu = built_ins_sh(tokens, en, buffer, statuss, av, cc, head, tok_com);
+	statu = built_ins_sh(tokens, en, buffer, statuss, av, cc, head, tok_com,
+		cur_node);
 	if (statu != 0)
 		return (2);
 	statu = add_path(tok_com, *en);
@@ -147,30 +138,21 @@ int check_command(char ***tokens, int *cc, char ***en, char **av,
 
 /**
 * createandexesh - creat and execute the command given by user
-* @tokens: strings from stdin
-* @cc: is the counter of commans executes by user
+* @statu: strings from stdin
 * @en: list containing the end parameter for execve syscall
-* @av: list containing the arguments given by user
 * @statuss: previous loop status
-* @head: all commands in a line
+* @cur_node: all commands in a line
 * @tok_com: ONE command of a line
+* @command: command to execute
 * Return: the process status
 */
-int createandexesh(char ***tokens, int *cc, char ***en, char **av,
-	int *statuss, dlistint_t **head, char ***tok_com)
+int exe_command(int statu, char ***en, int *statuss, char ***tok_com,
+	dlistint_t *cur_node, char *command)
 {
+	int wait_status = 0, exit_stat = 0;
 	pid_t child_pid;
-	int wait_status = 0, statu = 0, exit_stat = 0;
-	char *command = **tok_com, *trans;
 
-	statu = check_command(tokens, cc, en, av, statuss, head, tok_com);
-	if (statu != 0 && statu != 1)
-	{
-		if (statu != 2)
-			*statuss = statu;
-		return (statu);
-	}
-	trans = (*tok_com)[0], (*tok_com)[0] = command, command = trans;
+	(void)cur_node;
 	child_pid = fork();
 	if (child_pid == -1)
 	{
@@ -183,7 +165,7 @@ int createandexesh(char ***tokens, int *cc, char ***en, char **av,
 		if (execve(command, *tok_com, *en) == -1)
 		{
 			if (statu == 1)
-				free_tok(command);
+				free(command);
 			exit(127);
 		}
 	}
@@ -193,8 +175,43 @@ int createandexesh(char ***tokens, int *cc, char ***en, char **av,
 		if (WIFEXITED(wait_status))
 			exit_stat = WEXITSTATUS(wait_status);
 	}
+	return (exit_stat);
+}
+
+/**
+* createandexesh - creat and execute the command given by user
+* @tokens: strings from stdin
+* @cc: is the counter of commans executes by user
+* @en: list containing the end parameter for execve syscall
+* @av: list containing the arguments given by user
+* @statuss: previous loop status
+* @head: all commands in a line
+* @tok_com: ONE command of a line
+* @cur_node: current node command
+* Return: the process status
+*/
+int createandexesh(char ***tokens, int *cc, char ***en, char **av,
+	int *statuss, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
+{
+	int statu = 0, exit_stat = 0;
+	char *command = **tok_com, *trans;
+
+	statu = check_command(tokens, cc, en, av, statuss, head, tok_com,
+		cur_node);
+	if (statu != 0 && statu != 1)
+	{
+		if (statu != 2)
+		{
+			cur_node->status = statu;
+			*statuss = statu;
+		}
+		return (statu);
+	}
+	trans = (*tok_com)[0], (*tok_com)[0] = command, command = trans;
+	exit_stat = exe_command(statu, en, statuss, tok_com, cur_node, command);
 	if (statu == 1)
-		free_tok(command);
+		free(command);
 	*statuss = exit_stat;
+	cur_node->status = exit_stat;
 	return (exit_stat);
 }

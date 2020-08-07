@@ -38,11 +38,12 @@ int _atoi(char *s, int *is_number)
 * @av: list containing the arguments given by user
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: nothing
 */
 
-int exi(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
+int exi(char ***en, char ***tokens, char **buffer, int *statuss, char **av,
+	int *cc, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
 {
 	int s = *statuss, is_number = 0;
 	char err_message[] = "Illegal number: ";
@@ -54,7 +55,7 @@ int exi(char ***en, char ***tokens, char **buffer,
 		if (s < 0 || is_number == 1)
 		{
 			print_error_builtin(*av, *cc, *tok_com, err_message);
-			*statuss = 2;
+			*statuss = 2, cur_node->status = 2;
 			return (1);
 		}
 	}
@@ -88,24 +89,26 @@ int print_error_cd(char *av, int cc, char **tokens)
 * @av: list containing the arguments given by user
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: nothing
 */
 
-int cd(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
+int cd(char ***en, char ***tokens, char **buffer, int *statuss, char **av,
+	int *cc, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
 {
 	char *home_env = NULL, *prewd = NULL, *_set1[3], **set_old = _set1;
 	char *_set2[3], **set_new = _set2;
 	int ret = 0;
 
-	(void)buffer, (void)av, (void)cc, (void)ret;
+	(void)buffer, (void)av, (void)cc, (void)ret, (void)cur_node;
 	prewd = _getenv("OLDPWD", *en), home_env = _getenv("HOME", *en);
 	set_old[0] = NULL, set_old[1] = "OLDPWD";
 	set_old[2] = _getenv("PWD", *en);
 	set_new[0] = NULL, set_new[1] = "PWD";
 	if (!prewd)
 	{
-		_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old);
+		_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old,
+			cur_node);
 		prewd = _getenv("OLDPWD", *en);
 	}
 	if (!(*tok_com)[1])
@@ -127,8 +130,8 @@ int cd(char ***en, char ***tokens, char **buffer,
 			set_new[2] = (*tok_com)[1];
 		}
 	}
-	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old);
-	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_new);
+	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old, cur_node);
+	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_new, cur_node);
 	return (1);
 }
 
@@ -142,11 +145,13 @@ int cd(char ***en, char ***tokens, char **buffer,
 * @av: list containing the arguments given by user
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: numbers of characters printed
 */
 
-int built_ins_sh(char ***tokens, char ***en, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
+int built_ins_sh(char ***tokens, char ***en, char **buffer, int *statuss,
+	char **av, int *cc, dlistint_t **head, char ***tok_com,
+	dlistint_t *cur_node)
 {
 	int j;
 	op_t o[] = {
@@ -161,6 +166,6 @@ int built_ins_sh(char ***tokens, char ***en, char **buffer,
 	for (j = 0; o[j].op != NULL; j++)
 		if (_strcmp((*tok_com)[0], o[j].op) == 0)
 			return (o[j].f(en, tokens, buffer, statuss, av, cc,
-		head, tok_com));
+		head, tok_com, cur_node));
 	return (0);
 }

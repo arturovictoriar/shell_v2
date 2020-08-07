@@ -10,16 +10,17 @@
 * @av: list containing the arguments given by user
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: nothing
 */
 
-int env(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
+int env(char ***en, char ***tokens, char **buffer, int *statuss,
+	char **av, int *cc, dlistint_t **head, char ***tok_com,
+	dlistint_t *cur_node)
 {
 	int i, j;
-
 	(void)tokens, (void)buffer, (void)statuss, (void)av, (void)cc;
-	(void)head, (void)tok_com;
+	(void)head, (void)tok_com, (void)cur_node;
 
 	for (i = 0; (*en)[i] != NULL; i++)
 	{
@@ -91,15 +92,17 @@ char *concat_two_strings(char *str1, char *str2)
 * @av: list containing the arguments given by user
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: 0 on success otherwise -1
 */
-int _setenv(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
+int _setenv(char ***en, char ***tokens, char **buffer, int *statuss,
+	char **av, int *cc, dlistint_t **head, char ***tok_com,
+	dlistint_t *cur_node)
 {
 	int i = 0, j = 0, flag = 0, size_env = 0;
 	char *new_str = NULL, *new_str_eq, **new_en = NULL;
 	(void)buffer, (void)statuss, (void)av, (void)cc, (void)head;
-	(void)tokens;
+	(void)tokens, (void)cur_node;
 
 	if (!(*tok_com)[1] || !(*tok_com)[2])
 		return (1);
@@ -148,16 +151,18 @@ int _setenv(char ***en, char ***tokens, char **buffer,
 * @av: list containing the arguments given by user
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @cur_node: current node command
 * Return: nothing
 */
 
-int _unsetenv(char ***en, char ***tokens, char **buffer,
-	int *statuss, char **av, int *cc, dlistint_t **head, char ***tok_com)
+int _unsetenv(char ***en, char ***tokens, char **buffer, int *statuss,
+	char **av, int *cc, dlistint_t **head, char ***tok_com,
+	dlistint_t *cur_node)
 {
 	int i = 0, j = 0, k = 0, flag = 0, size_env = 0;
 	char **new_en = NULL;
 	(void)buffer, (void)statuss, (void)av, (void)cc, (void)head;
-	(void)tokens;
+	(void)tokens, (void)cur_node;
 
 	if (!(*tok_com)[1])
 		return (1);
