@@ -37,7 +37,7 @@ int num_tokens(char **buffer, ssize_t read)
 int count_sign_command(char **buff, ssize_t *read)
 {
 	int i = 0, j = 0, sign_commands = 0, flag_deli = 0;
-	char *all_f_gene[] = {">", ">>", "<", "<<", "||", "|", ";", "&&", NULL};
+	char *all_f_gene[] = {">>", ">", "<<", "<", "||", "|", ";", "&&", NULL};
 	char **all_flags = all_f_gene;
 
 	for (i = 0; i < *read; i++)
@@ -68,7 +68,7 @@ int count_sign_command(char **buff, ssize_t *read)
 int copy_in_new_buffer(char **buff, ssize_t *read, char **new_buff)
 {
 	int i = 0, j = 0, flag_deli = 0, add_spaces = 0, num_sign = 0;
-	char *all_f_gene[] = {">", ">>", "<", "<<", "||", "|", ";", "&&", NULL};
+	char *all_f_gene[] = {">>", ">", "<<", "<", "||", "|", ";", "&&", NULL};
 	char **all_flags = all_f_gene;
 
 	for (i = 0; i < *read; i++)

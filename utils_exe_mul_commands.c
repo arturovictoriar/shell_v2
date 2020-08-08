@@ -29,8 +29,6 @@ int read_command_output(int *pipefd, dlistint_t *cur_node)
 	while (read(pipefd[0], &buff, 1024) > 0)
 		realloc_buffer(&(cur_node->buffer_in), buff);
 	close(pipefd[0]);
-	if (cur_node->buffer_in)
-		printf("%s", cur_node->buffer_in);
 	return (0);
 }
 
