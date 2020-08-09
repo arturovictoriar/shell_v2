@@ -45,6 +45,14 @@ int exe_one_command(char ***tokens, int *cc, char ***en, char **av,
 	case 1: /* > */
 		redir_output(head, tok_com);
 		break;
+	case 2: /* << */
+		flag_terminator = redir_input_heredoc(tokens, cc, en, av, status,
+			head, tok_com, copy_head);
+		break;
+	case 3: /* < */
+		flag_terminator = redir_input(tokens, cc, en, av, status, head,
+			tok_com, copy_head);
+		break;
 	case 4: /* || */
 		flag_terminator = or_condition(tokens, cc, en, av, status, head,
 			tok_com, copy_head);

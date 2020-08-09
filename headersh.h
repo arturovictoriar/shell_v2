@@ -66,6 +66,7 @@ int _strlen(char *st);
 char *_itoa(int num, char *strnum);
 int _strcmp(char *s1, char *s2);
 int _strcmp_c(char *s1, char *s2);
+int _strcmp_n(char *s1, char *s2, int n);
 
 /*Main functions hsh*/
 int simple_sh(char **av, char ***en);
@@ -126,6 +127,7 @@ int stdout_to_file(char *filename);
 int stdout_to_end_file(char *filename);
 int set_normal_stdin(int stdin_copy);
 int stdout_to_stdin(int *pipefd);
+int stdin_to_file(char *filename);
 
 /*Utils operator execution*/
 int redir_output_append(dlistint_t **head, char ***tok_com);
@@ -137,5 +139,9 @@ int and_condition(char ***tokens, int *cc, char ***en, char **av,
 int exe_multi_commands(char ***tokens, int *cc, char ***en, char **av,
 	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
 int out_redir_in(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int redir_input(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int redir_input_heredoc(char ***tokens, int *cc, char ***en, char **av,
 	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
 #endif
