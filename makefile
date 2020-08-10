@@ -7,9 +7,7 @@ TESTS = env exit
 
 hsh: $(OBJDIR) $(OBJ)
 
-	betty $(CFILES)
-	@cc $(CFLAGS) -o hsh $(OBJ)
-	cp hsh $(TESTDIR)
+	@gcc $(CFLAGS) -o hsh $(OBJ)
 
 $(OBJDIR)%.o: %.c headersh.h
 	cc $(CFLAGS) -c $< -o $@
