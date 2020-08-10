@@ -23,11 +23,18 @@ int create_pipe(int (*pipefd)[2])
 */
 int read_command_output(int *pipefd, dlistint_t *cur_node)
 {
-	char buff[1024] = "";
+	char buff[1025] = "";
+	int i = 0;
 
 	close(pipefd[1]);
+	for (i = 0; i < 1025; i++)
+		buff[i] = '\0';
 	while (read(pipefd[0], &buff, 1024) > 0)
+	{
 		realloc_buffer(&(cur_node->buffer_in), buff);
+		for (i = 0; i < 1025; i++)
+			buff[i] = '\0';
+	}
 	close(pipefd[0]);
 	return (0);
 }
@@ -60,6 +67,8 @@ int realloc_buffer(char **buffer, char *str)
 	char *new_buffer = NULL;
 	int size_buffer = 0, size_str = 0, i = 0;
 
+	if (!str || str[0] == '\0')
+		return (0);
 	for (size_buffer = 0; *buffer && (*buffer)[size_buffer]; size_buffer++)
 		continue;
 	for (size_str = 0; str && str[size_str]; size_str++)

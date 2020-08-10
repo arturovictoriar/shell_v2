@@ -17,7 +17,7 @@ $(OBJDIR):
 
 .PHONY: all
 all : hsh
-	
+
 
 .PHONY: clean
 clean:
