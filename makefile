@@ -15,6 +15,11 @@ $(OBJDIR)%.o: %.c headersh.h
 $(OBJDIR):
 	mkdir $(OBJDIR);
 
+.PHONY: all
+all :  $(OBJDIR) $(OBJ)
+	@gcc $(CFLAGS) -o hsh $(OBJ)
+	
+
 .PHONY: clean
 clean:
 	@rm -rf $(OBJDIR)
