@@ -60,19 +60,27 @@ typedef struct op
 				dlistint_t **, char ***tok_com, dlistint_t *);
 } op_t;
 
+/*Utils*/
 char *_strcat(char *dest, char *src);
 int _strlen(char *st);
 char *_itoa(int num, char *strnum);
+int _strcmp(char *s1, char *s2);
+int _strcmp_c(char *s1, char *s2);
+int _strcmp_n(char *s1, char *s2, int n);
+
+/*Main functions hsh*/
 int simple_sh(char **av, char ***en);
 int readsh(char **buffer, int *len);
 void parsesh(char **buffer, int *len, char ***tokens, int *status);
 int createandexesh(char ***, int *, char ***, char **, int *,
 	dlistint_t **, char ***, dlistint_t *);
+
+/*Utils main functions*/
 char *_getenv(const char *variable_env, char **en);
 path_node *_getpathdir(char *path, char **);
 int add_path(char ***tokens, char **en);
 void get_path(path_node **list_path, char **en);
-int _strcmp(char *s1, char *s2);
+
 
 /*Free all allocate variables*/
 void free_list(path_node *list_path);
@@ -111,4 +119,29 @@ int realloc_buffer(char **buffer, char *str);
 int create_pipe(int (*pipefd)[2]);
 int read_command_output(int *pipefd, dlistint_t *cur_node);
 int change_output_command(int *pipefd);
+
+
+/*Files redirecctions*/
+int set_normal_stdout(int stdout_copy);
+int stdout_to_file(char *filename);
+int stdout_to_end_file(char *filename);
+int set_normal_stdin(int stdin_copy);
+int stdout_to_stdin(int *pipefd);
+int stdin_to_file(char *filename);
+
+/*Utils operator execution*/
+int redir_output_append(dlistint_t **head, char ***tok_com);
+int redir_output(dlistint_t **head, char ***tok_com);
+int or_condition(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int and_condition(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int exe_multi_commands(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int out_redir_in(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int redir_input(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
+int redir_input_heredoc(char ***tokens, int *cc, char ***en, char **av,
+	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
 #endif
