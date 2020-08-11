@@ -7,7 +7,7 @@
 */
 int sign_com_pos(char *next_deli)
 {
-	char *all_f_gene[] = {">>", ">", "<<", "<", "||", "|", ";", "&&", NULL};
+	char *all_f_gene[] ={ ">>", ">", "<<", "<", "||", "|", ";", "&&", NULL };
 	char **all_flags = all_f_gene;
 	int i = 0;
 
@@ -35,19 +35,19 @@ int sign_com_pos(char *next_deli)
 int exe_one_command(char ***tokens, int *cc, char ***en, char **av,
 	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head)
 {
-	int flag_terminator = 0;
+	int flag_terminator = 0, error = 0;
 
 	switch (sign_com_pos(copy_head->prev->next_deli))
 	{
 	case 0: /* >> */
-		redir_output_append(head, tok_com);
+		error = redir_output_append(head, tok_com, status);
 		break;
 	case 1: /* > */
-		redir_output(head, tok_com);
+		error = redir_output(head, tok_com, status);
 		break;
 	case 2: /* << */
-		flag_terminator = redir_input_heredoc(tokens, cc, en, av, status,
-			head, tok_com, copy_head);
+		flag_terminator = redir_input_heredoc(tokens, cc, en, av,
+			status, head, tok_com, copy_head);
 		break;
 	case 3: /* < */
 		flag_terminator = redir_input(tokens, cc, en, av, status, head,
@@ -66,9 +66,13 @@ int exe_one_command(char ***tokens, int *cc, char ***en, char **av,
 			tok_com, copy_head);
 		break;
 	case 7: /* && */
-		flag_terminator = and_condition(tokens, cc, en, av, status, head,
-			tok_com, copy_head);
+		flag_terminator = and_condition(tokens, cc, en, av, status,
+			head, tok_com, copy_head);
 		break;
+	}
+	if (error == EXIT_IS_DIR || error == EXIT_NOT_ACCESS)
+	{
+		print_error(av[0], *cc, (*tok_com)[0], error);
 	}
 	return (flag_terminator);
 }
@@ -96,12 +100,12 @@ int exe_mul_commands(char ***tokens, int *cc, char ***en, char **av,
 		tok_com = &(copy_head->tokens);
 		sign_command_pos = sign_com_pos(copy_head->next_deli);
 		if (copy_head->prev)
-			flag_terminator = exe_one_command(tokens, cc, en, av, status,
-				head, tok_com, copy_head);
+			flag_terminator = exe_one_command(tokens, cc, en, av,
+				status, head, tok_com, copy_head);
 		else
 			if (sign_command_pos < 2 || sign_command_pos > 3)
-				createandexesh(tokens, cc, en, av, status, head, tok_com,
-					copy_head);
+				createandexesh(tokens, cc, en, av, status, head,
+					tok_com, copy_head);
 
 		if (sign_command_pos > 3 && sign_command_pos != 5)
 			if (copy_head->buffer_in)

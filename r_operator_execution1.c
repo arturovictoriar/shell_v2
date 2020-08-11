@@ -4,13 +4,20 @@
 * redir_output_append - choose the correct option to exe a commmand
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @status: status
 * Return: the process status
 */
-int redir_output_append(dlistint_t **head, char ***tok_com)
+int redir_output_append(dlistint_t **head, char ***tok_com, int *status)
 {
-	int stdout_copy = dup(1);
+	int stdout_copy = dup(1), result = 0;
 
-	stdout_to_end_file(**tok_com);
+	result = stdout_to_end_file(**tok_com);
+
+	if (result == EXIT_IS_DIR || result == EXIT_NOT_ACCESS)
+	{
+		*status = 2;
+		return (result);
+	}
 	if ((*head)->buffer_in)
 	{
 		printf("%s", (*head)->buffer_in);
@@ -24,13 +31,20 @@ int redir_output_append(dlistint_t **head, char ***tok_com)
 * redir_output - choose the correct option to exe a commmand
 * @head: all commands in a line
 * @tok_com: ONE command of a line
+* @status: status
 * Return: the process status
 */
-int redir_output(dlistint_t **head, char ***tok_com)
+int redir_output(dlistint_t **head, char ***tok_com, int *status)
 {
-	int stdout_copy = dup(1);
+	int stdout_copy = dup(1), result = 0;
 
-	stdout_to_file(**tok_com);
+	result = stdout_to_file(**tok_com);
+
+	if (result == EXIT_IS_DIR || result == EXIT_NOT_ACCESS)
+	{
+		*status = 2;
+		return (result);
+	}
 	if ((*head)->buffer_in)
 	{
 		printf("%s", (*head)->buffer_in);

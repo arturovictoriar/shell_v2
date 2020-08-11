@@ -9,7 +9,13 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 #include <fcntl.h>
+#include <errno.h>
 
+
+/*ERRORS*/
+
+#define EXIT_IS_DIR (EISDIR + 1)
+#define EXIT_NOT_ACCESS (EACCES + 1)
 
 /**
 * struct dlistint_s - doubly linked list
@@ -57,7 +63,7 @@ typedef struct op
 {
 	char *op;
 	int (*f)(char ***, char ***, char **, int *, char **, int *,
-				dlistint_t **, char ***tok_com, dlistint_t *);
+		dlistint_t **, char ***tok_com, dlistint_t *);
 } op_t;
 
 /*Utils*/
@@ -88,6 +94,8 @@ void free_all(char **buffer, char ***tokens, dlistint_t **head);
 
 /*Print Error Built-in*/
 void print_error_builtin(char *av, int cc, char **token, char *errmsg);
+void open_errors(char *av, int cc, char *tok, int errmsg);
+void print_error(char *av, int cc, char *tok, int errmsg);
 
 /*Built-ins*/
 int built_ins_sh(char ***tokens, char ***, char **, int *, char **,
@@ -116,7 +124,7 @@ int exe_mul_commands(char ***tokens, int *cc, char ***en, char **av,
 
 /*Utils for execute multiples commands*/
 int realloc_buffer(char **buffer, char *str);
-int create_pipe(int (*pipefd)[2]);
+int create_pipe(int(*pipefd)[2]);
 int read_command_output(int *pipefd, dlistint_t *cur_node);
 int change_output_command(int *pipefd);
 
@@ -130,8 +138,8 @@ int stdout_to_stdin(int *pipefd);
 int stdin_to_file(char *filename);
 
 /*Utils operator execution*/
-int redir_output_append(dlistint_t **head, char ***tok_com);
-int redir_output(dlistint_t **head, char ***tok_com);
+int redir_output_append(dlistint_t **head, char ***tok_com, int *status);
+int redir_output(dlistint_t **head, char ***tok_com, int *status);
 int or_condition(char ***tokens, int *cc, char ***en, char **av,
 	int *status, dlistint_t **head, char ***tok_com, dlistint_t *copy_head);
 int and_condition(char ***tokens, int *cc, char ***en, char **av,

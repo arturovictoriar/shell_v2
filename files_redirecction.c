@@ -40,6 +40,8 @@ int stdout_to_file(char *filename)
 	int fd = 0;
 
 	fd = open(filename, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+	if (fd == -1)
+		return (errno + 1);
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");
@@ -59,6 +61,8 @@ int stdout_to_end_file(char *filename)
 	int fd = 0;
 
 	fd = open(filename, O_RDWR | O_APPEND | O_CREAT, S_IRUSR | S_IWUSR);
+	if (fd == -1)
+		return (errno + 1);
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		perror("dup2");

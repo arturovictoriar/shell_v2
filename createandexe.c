@@ -75,6 +75,8 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 		_strcat(message, "Permission denied\n");
 		write(STDERR_FILENO, message, msg_len);
 	}
+	if (errmsg == EXIT_NOT_ACCESS || errmsg == EXIT_IS_DIR)
+		open_errors(av, cc, tok, errmsg);
 	free(message);
 }
 

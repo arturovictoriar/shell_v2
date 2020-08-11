@@ -15,7 +15,7 @@ void parsesh(char **buffer, int *len, char ***tokens, int *status)
 	int i;
 	const char delim[] = " \t\n";
 
-	(void) status;
+	(void)status;
 	*tokens = malloc(sizeof(char *) * (*len + 1));
 	if (*tokens == NULL)
 	{
