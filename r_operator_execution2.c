@@ -95,7 +95,8 @@ int redir_input_heredoc(char ***tokens, int *cc, char ***en, char **av,
 
 	len_tok_com = _strlen(**tok_com);
 	do {
-		printf("> ");
+		if (isatty(STDIN_FILENO))
+			printf("> ");
 		read = getline(&buff, &sizebuf, stdin);
 		if (!_strcmp_n(buff, **tok_com, len_tok_com))
 			break;
