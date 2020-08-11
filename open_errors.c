@@ -47,4 +47,5 @@ void open_errors(char *av, int cc, char *tok, int errmsg)
 		_strcat(message, "Is a directory\n");
 		write(STDERR_FILENO, message, msg_len);
 	}
+	free(message);
 }
