@@ -94,14 +94,14 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 */
 
 int check_command(char ***tokens, int *cc, char ***en, char **av,
-	int *statuss, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
+				  int *statuss, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
 {
 	int statu = 0;
 	char **buffer = *tokens, *tok = NULL;
-	struct stat st;
+	struct stat st = {0};
 
 	statu = built_ins_sh(tokens, en, buffer, statuss, av, cc, head, tok_com,
-		cur_node);
+						 cur_node);
 	if (statu != 0)
 		return (2);
 	statu = add_path(tok_com, *en);
@@ -149,7 +149,7 @@ int check_command(char ***tokens, int *cc, char ***en, char **av,
 * Return: the process status
 */
 int exe_command(int statu, char ***en, int *statuss, char ***tok_com,
-	dlistint_t *cur_node, char *command)
+				dlistint_t *cur_node, char *command)
 {
 	int wait_status = 0, exit_stat = 0, pipefd[2];
 	pid_t child_pid;
@@ -195,13 +195,13 @@ int exe_command(int statu, char ***en, int *statuss, char ***tok_com,
 * Return: the process status
 */
 int createandexesh(char ***tokens, int *cc, char ***en, char **av,
-	int *statuss, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
+				   int *statuss, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
 {
 	int statu = 0, exit_stat = 0;
 	char *command = **tok_com, *trans;
 
 	statu = check_command(tokens, cc, en, av, statuss, head, tok_com,
-		cur_node);
+						  cur_node);
 	if (statu != 0 && statu != 1)
 	{
 		if (statu != 2)
