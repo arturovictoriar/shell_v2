@@ -61,7 +61,7 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 		_strcat(message, "not found\n");
 		write(STDERR_FILENO, message, msg_len);
 	}
-	if (errmsg == 0)
+	else if (errmsg == 0)
 	{
 		msg_len = (24 + av_len + tok_len + cc_len);
 		message = malloc(sizeof(char) * (msg_len + 1));
@@ -75,7 +75,7 @@ void print_error(char *av, int cc, char *tok, int errmsg)
 		_strcat(message, "Permission denied\n");
 		write(STDERR_FILENO, message, msg_len);
 	}
-	if (errmsg == EXIT_NOT_ACCESS || errmsg == EXIT_IS_DIR)
+	else
 		open_errors(av, cc, tok, errmsg);
 	free(message);
 }

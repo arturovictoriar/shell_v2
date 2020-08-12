@@ -7,7 +7,7 @@
 */
 int sign_com_pos(char *next_deli)
 {
-	char *all_f_gene[] = {">>", ">", "<<", "<", "||", "|", ";", "&&", NULL};
+	char *all_f_gene[] ={ ">>", ">", "<<", "<", "||", "|", ";", "&&", NULL };
 	char **all_flags = all_f_gene;
 	int i = 0;
 

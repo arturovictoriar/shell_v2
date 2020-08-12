@@ -57,7 +57,11 @@ int redir_input(char ***tokens, int *cc, char ***en, char **av,
 	int stdin_copy = dup(0), flag_terminator = 0, no_file = 0;
 
 	no_file = stdin_to_file(**tok_com);
-	if (!no_file)
+	if (no_file)
+	{
+		print_error(av[0], *cc, (*tok_com)[0], no_file);
+	}
+	else if (!no_file)
 	{
 		createandexesh(tokens, cc, en, av, status, head,
 			&(copy_head->prev->tokens), copy_head->prev);

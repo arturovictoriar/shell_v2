@@ -16,6 +16,7 @@
 
 #define EXIT_IS_DIR (EISDIR + 1)
 #define EXIT_NOT_ACCESS (EACCES + 1)
+#define EXIT_NOT_EXIST (ENOENT + 1)
 
 /**
 * struct dlistint_s - doubly linked list
