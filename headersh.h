@@ -74,6 +74,7 @@ char *_itoa(int num, char *strnum);
 int _strcmp(char *s1, char *s2);
 int _strcmp_c(char *s1, char *s2);
 int _strcmp_n(char *s1, char *s2, int n);
+char *_strcpy(char *s1);
 
 /*Main functions hsh*/
 int simple_sh(char **av, char ***en);

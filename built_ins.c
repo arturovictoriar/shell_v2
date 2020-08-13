@@ -96,25 +96,22 @@ int print_error_cd(char *av, int cc, char **tokens)
 int cd(char ***en, char ***tokens, char **buffer, int *statuss, char **av,
 	   int *cc, dlistint_t **head, char ***tok_com, dlistint_t *cur_node)
 {
-	char *home_env = NULL, *prewd = NULL, *_set1[3], **set_old = _set1;
-	char *_set2[3], **set_new = _set2;
+	char  *s1[3] = {NULL, "OLDPWD"}, *s2[3] = {NULL, "PWD"}, *home_env = NULL;
+	char  *prewd = _getenv("OLDPWD", *en), **so = s1, **sn = s2;
 	int ret = 0;
 
 	(void)buffer, (void)av, (void)cc, (void)ret, (void)cur_node;
-	prewd = _getenv("OLDPWD", *en), home_env = _getenv("HOME", *en);
-	set_old[0] = NULL, set_old[1] = "OLDPWD", set_old[2] = _getenv("PWD", *en);
-	set_new[0] = NULL, set_new[1] = "PWD";
+	home_env = _getenv("HOME", *en), so[2] = _getenv("PWD", *en);
 	if (!prewd)
 	{
-		_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old,
-				cur_node);
+		_setenv(en, tokens, buffer, statuss, av, cc, head, &so, cur_node);
 		prewd = _getenv("OLDPWD", *en);
 	}
 	if (!(*tok_com)[1])
 	{
 		if (!home_env)
 			return (1);
-		ret = chdir(home_env), set_new[2] = home_env;
+		ret = chdir(home_env), sn[2] = home_env;
 	}
 	else
 	{
@@ -123,18 +120,21 @@ int cd(char ***en, char ***tokens, char **buffer, int *statuss, char **av,
 			ret = chdir(prewd);
 			if (ret == -1)
 				return (print_error_cd(*av, *cc, *tok_com));
-			printf("%s\n", prewd), set_new[2] = prewd;
+			printf("%s\n", prewd), sn[2] = _strcpy(prewd);
+			_setenv(en, tokens, buffer, statuss, av, cc, head, &so, cur_node);
+			_setenv(en, tokens, buffer, statuss, av, cc, head, &sn, cur_node);
+			free(sn[2]);
+			return (1);
 		}
 		else
 		{
-			ret = chdir((*tok_com)[1]);
+			ret = chdir((*tok_com)[1]), sn[2] = (*tok_com)[1];
 			if (ret == -1)
 				return (print_error_cd(*av, *cc, *tok_com));
-			set_new[2] = (*tok_com)[1];
 		}
 	}
-	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_old, cur_node);
-	_setenv(en, tokens, buffer, statuss, av, cc, head, &set_new, cur_node);
+	_setenv(en, tokens, buffer, statuss, av, cc, head, &so, cur_node);
+	_setenv(en, tokens, buffer, statuss, av, cc, head, &sn, cur_node);
 	return (1);
 }
 

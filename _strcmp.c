@@ -86,3 +86,25 @@ int _strcmp_n(char *s1, char *s2, int n)
 		res = s1[i] - s2[i];
 	return (res);
 }
+
+/**
+ **_strcpy - copy s1
+ *@s1: first string to be compared
+ *
+ *Return: the copy of s1
+ */
+char *_strcpy(char *s1)
+{
+	int i = 0, len_s1 = 0;
+	char *new_s = NULL;
+
+	for (len_s1 = 0; s1[len_s1]; len_s1++)
+		continue;
+	new_s = malloc(sizeof(char) * (len_s1 + 1));
+	if (!new_s)
+		return (NULL);
+	for (i = 0; s1[i]; i++)
+		new_s[i] = s1[i];
+	new_s[i] = '\0';
+	return (new_s);
+}
