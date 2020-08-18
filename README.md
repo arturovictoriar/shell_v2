@@ -1,10 +1,14 @@
-# Simple Shell
+# Shell V2
 
 ### *hsh* - Holberton SHell, custom shell version created by Holberton students
 
 #### COMPILATION
 
-If the shell is not compiled then compile it as follows:
+- Type "make" in the console
+
+> make
+
+- If the make is not compiled then compile it as follows:
 
 > gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
 
@@ -40,12 +44,14 @@ After this invocation the shell will exit and return to the terminal that called
 
 #### BUILT-INS
 
-The shell has a few built-in functions. These are: **exit, env** and **cd.**
+The shell has a few built-in functions. These are: **setenv**, **unsetenv**, **exit, env** and **cd.**
 
 #### BUGS
 
-The shell does not handle the following special characters _", ', `, \, *, &, #, $$, ||._
+The shell does not handle the following special characters _", ', `, \, *, #._
 
 #### AUTHOR
 
-Juan Buitrago (_@juanfe9118_) and Arturo Victoria (_@arvicrin_)
+* **Arturo Victoria** (_@arvicrin_)[https://github.com/arvicrin]
+* **Juan Buitrago** (_@juanfe9118_)[https://github.com/juanfe9118]
+* **Jhonatan Arenas** (_@cybernuki_)[https://github.com/cybernuki]
