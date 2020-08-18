@@ -52,6 +52,6 @@ The shell does not handle the following special characters _", ', `, \, *, #._
 
 #### AUTHOR
 
-* **Arturo Victoria** (_@arvicrin_)[https://github.com/arvicrin]
-* **Juan Buitrago** (_@juanfe9118_)[https://github.com/juanfe9118]
-* **Jhonatan Arenas** (_@cybernuki_)[https://github.com/cybernuki]
+* **Arturo Victoria** [@arvicrin](https://github.com/arvicrin)
+* **Juan Buitrago** [@juanfe9118](https://github.com/juanfe9118)
+* **Jhonatan Arenas** [@cybernuki](https://github.com/cybernuki)
