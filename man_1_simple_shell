@@ -21,9 +21,33 @@ After this invocation the prompt will be printed and the user will be able to en
 [Command] [Command Options] [Arguments] ... | ./hsh
 
 After this invocation the shell will exit and return to the terminal that called it.
+
+.SH Redirections
+Redirections are used to change where a command reads its input or sends its output.  In general, redirections open, close, or duplicate an existing reference to a file.  The overall format used for redirection is:
+
+     redir-op file
+
+where redir-op is one of the redirection operators mentioned previously.
+
+The following redirection is often called a “here-document”. and is supported by this version of the shell
+
+      << delimiter
+        here-doc-text ...
+    delimiter
+
+.SH Pipelines
+
+This version of shell support pipelining
+example:
+$ command1 2>&1 | command2
+
 .SH BUILT-INS
 The shell has a few built-in functions. These are: \fBexit, env \fRand \fBcd.\fR
+\fBsetenv.\fR \fBunset.\fR
 .SH BUGS
-The shell does not handle the following special characters\fI\fR ", ', `, \\, *, &, #, &&, ||.
+Redirections no supported [n1]<&n2 [n]<&- [n1]>&n2 [n]>&- [n]<> file and filedescriptor>file
 .SH AUTHOR
 Juan Buitrago (\fI@juanfe9118\fR) and Arturo Victoria (\fI@arvicrin\fR)
+
+.SH EDITED
+Jhonatan Arenas(\fI@cybernuki\fR)
