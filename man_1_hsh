@@ -1,4 +1,4 @@
-.TH man 1 "27 November 2019" "1.00" "hsh man page"
+.TH man 1 "18 August 2020" "2.00" "hsh man page"
 .SH NAME
 \fBhsh \fR\- Holberton SHell, custom shell version created by Holberton students
 .SH SYNOPSIS
@@ -22,8 +22,10 @@ After this invocation the prompt will be printed and the user will be able to en
 
 After this invocation the shell will exit and return to the terminal that called it.
 .SH BUILT-INS
-The shell has a few built-in functions. These are: \fBexit, env \fRand \fBcd.\fR
+The shell has a few built-in functions. These are: \fBexit, env, setenv, unsetenv \fRand \fBcd.\fR
 .SH BUGS
-The shell does not handle the following special characters\fI\fR ", ', `, \\, *, &, #, &&, ||.
-.SH AUTHOR
-Juan Buitrago (\fI@juanfe9118\fR) and Arturo Victoria (\fI@arvicrin\fR)
+The shell does not handle the following special characters: ", ', `, \\, *, #.
+.SH I/O REDIRECTIONS
+The shell has the next I/O redirecctions: <, <<, >, >>, |, &, &&, ||, ;.
+.SH AUTHORS
+Arturo Victoria (\fI@arturovictoriar\fR), Jhonatan Arenas (\fI@cybernuki\fR) and Juan Buitrago (\fI@juanfe9118\fR)
